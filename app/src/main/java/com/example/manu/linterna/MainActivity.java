@@ -1,18 +1,53 @@
 package com.example.manu.linterna;
 
+import android.hardware.Camera;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
+import static com.example.manu.linterna.R.drawable.encender;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private Camera camera;
+    ImageView imagen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        imagen = (ImageView) findViewById(R.id.imageView);
+
+        //Encender el flash
+        encender();
     }
+
+    public void encender(){
+        imagen.setImageResource(R.drawable.encender);
+        camera = Camera.open();
+        Camera.Parameters parameters = camera.getParameters();
+        parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        camera.setParameters(parameters);
+        camera.startPreview();
+    }
+
+    public void apagar(){
+        imagen.setImageResource(R.drawable.apagar);
+        camera.stopPreview();
+        camera.release();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //Apagar el flash
+        apagar();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
